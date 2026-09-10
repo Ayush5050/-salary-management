@@ -1,0 +1,10 @@
+/* Numeric columns use tabular figures so digits align vertically and a column
+   of salaries can be compared at a glance rather than read one by one. */
+.numeric {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+th.numeric {
+  text-align: right;
+}

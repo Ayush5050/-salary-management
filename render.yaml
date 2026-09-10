@@ -1,0 +1,23 @@
+# Render blueprint: one Docker service serving the API and the UI together.
+#
+# A persistent disk is required rather than optional — SQLite writes to a file,
+# and without a disk every deploy would reset the data, including any employee
+# added through the UI.
+
+services:
+  - type: web
+    name: acme-salary-management
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: SALARY_DATABASE_URL
+        value: sqlite:////data/salary.db
+      - key: SALARY_STATIC_DIR
+        value: /app/static
+    disk:
+      name: salary-data
+      mountPath: /data
+      sizeGB: 1

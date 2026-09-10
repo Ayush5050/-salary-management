@@ -1,0 +1,25 @@
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8080:8000"
+    volumes:
+      # Named volume so the seeded data and anything added through the UI
+      # survive a restart.
+      - salary-data:/data
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      # Generous: the first boot seeds 10,000 employees before it starts serving.
+      start_period: 40s
+    restart: unless-stopped
+
+volumes:
+  salary-data:
