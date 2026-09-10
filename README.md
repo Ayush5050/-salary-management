@@ -6,7 +6,7 @@ about how the organisation pays people without exporting anything.
 
 Built for the Incubyte engineering assessment.
 
-> **Deployed demo:** _add URL here_ · **Video walkthrough:** _add link here_
+> **Deployed demo:** _add URL here_
 
 ---
 
@@ -51,16 +51,19 @@ trust if you hit trouble.
 <summary>Deploying it</summary>
 
 `render.yaml` is a Render blueprint for the combined image. In the Render dashboard: **New →
-Blueprint**, point it at this repository, and deploy. It builds the Dockerfile, attaches the 1 GB
-disk at `/data`, and seeds 10,000 employees on first boot — so the first deploy takes a couple of
-minutes before the health check passes.
+Blueprint**, point it at this repository, and deploy. It builds the Dockerfile and seeds 10,000
+employees on first boot — so the first deploy takes a couple of minutes before the health check
+passes.
 
-The disk is required, not optional: SQLite writes to a file, and without it every deploy would reset
-the data. Seeding runs only when `/data/salary.db` is absent, so redeploys keep anything added
-through the UI.
+The committed blueprint targets Render's **free** tier for a zero-cost live demo: no persistent
+disk, so `/data` is ephemeral. The deterministic seed re-runs on each cold start, so the 10,000
+employees are always present, but anything added through the UI lasts only until the instance
+restarts (and free instances spin down after inactivity, adding a cold-start delay on the next
+visit). For a persistent deployment, switch the blueprint to the `starter` plan and add a `disk:`
+mounted at `/data` — SQLite then keeps everything across restarts. The reasoning is in
+[ADR-0002](docs/adr/0002-sqlite-over-postgres.md).
 
-Any host that runs a Dockerfile with a persistent volume works the same way — the image reads `PORT`
-from the environment.
+Any host that runs a Dockerfile works the same way — the image reads `PORT` from the environment.
 
 </details>
 

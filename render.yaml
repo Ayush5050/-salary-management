@@ -1,8 +1,12 @@
 # Render blueprint: one Docker service serving the API and the UI together.
 #
-# A persistent disk is required rather than optional — SQLite writes to a file,
-# and without a disk every deploy would reset the data, including any employee
-# added through the UI.
+# This blueprint targets Render's free tier for a zero-cost live demo. There is
+# no persistent disk, so /data is ephemeral: the deterministic 10,000-employee
+# seed re-runs on every cold start, and anything added through the UI lasts only
+# until the instance restarts. That is the right trade-off for a demo, not for
+# production — the production shape keeps a persistent disk at /data (see
+# docs/adr/0002-sqlite-over-postgres.md), which on Render means the `starter`
+# plan plus a `disk:` block mounted at /data.
 
 services:
   - type: web
@@ -10,14 +14,10 @@ services:
     runtime: docker
     dockerfilePath: ./Dockerfile
     dockerContext: .
-    plan: starter
+    plan: free
     healthCheckPath: /api/health
     envVars:
       - key: SALARY_DATABASE_URL
         value: sqlite:////data/salary.db
       - key: SALARY_STATIC_DIR
         value: /app/static
-    disk:
-      name: salary-data
-      mountPath: /data
-      sizeGB: 1
