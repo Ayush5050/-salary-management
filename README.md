@@ -6,7 +6,7 @@ about how the organisation pays people without exporting anything.
 
 Built for the Incubyte engineering assessment.
 
-> **Deployed demo:** _add URL here_
+> **Deployed demo:** <https://salary-management-qw64.onrender.com>
 
 ---
 
